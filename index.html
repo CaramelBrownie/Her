@@ -1,13 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Redirecting...</title>
-    <script>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="3;url=January_special/Conf.html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading...</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap');
+
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #ffb6c1, #ffc0cb, #ffe4e1);
+        background-size: 400% 400%;
+        animation: gradientShift 10s ease infinite;
+        text-align: center;
+        overflow: hidden;
+        color: #fff;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+        font-family: 'Pacifico', cursive;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #fff;
+        text-shadow: 2px 2px 8px rgba(255,182,193,0.5);
+    }
+
+    /* Loading hearts animation */
+    .loading {
+        display: flex;
+        gap: 15px;
+    }
+
+    .loading span {
+        font-size: 2em;
+        animation: bounce 1.2s infinite;
+    }
+
+    .loading span:nth-child(2) { animation-delay: 0.2s; }
+    .loading span:nth-child(3) { animation-delay: 0.4s; }
+    .loading span:nth-child(4) { animation-delay: 0.6s; }
+
+    @keyframes bounce {
+        0%, 80%, 100% { transform: scale(0.5); opacity: 0.5; }
+        40% { transform: scale(1.2); opacity: 1; }
+    }
+
+    p {
+        margin-top: 30px;
+        font-size: 1.2em;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 15px 35px;
+        font-size: 18px;
+        border: none;
+        border-radius: 50px;
+        background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        color: #fff;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(255,182,193,0.5);
+    }
+
+    button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(255,182,193,0.7);
+    }
+</style>
+<script>
+    // Fallback automatic redirect
+    setTimeout(() => {
         window.location.href = "January_special/Conf.html";
-    </script>
+    }, 3000);
+</script>
 </head>
 <body>
-    <p>If you are not redirected automatically, <a href="January_special/Conf.html">click here</a>.</p>
+    <h1>💖 Loading Your Magic! 💖</h1>
+    
+    <div class="loading">
+        <span>💖</span>
+        <span>💖</span>
+        <span>💖</span>
+        <span>💖</span>
+    </div>
+
+    <p>If the magic doesn’t work, click below:</p>
+    <button onclick="window.location.href='January_special/Conf.html'">
+        Take Me There ✨
+    </button>
 </body>
 </html>
