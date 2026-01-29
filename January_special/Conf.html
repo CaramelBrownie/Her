@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Emoji Super Burst</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, sans-serif; }
+
+body {
+    height: 100vh;
+    background: linear-gradient(160deg, #1e3c72, #2a5298);
+    overflow: hidden;
+    color: white;
+}
+
+.card {
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 40px;
+    border-radius: 26px;
+    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+    z-index: 1000;
+}
+
+button {
+    padding: 14px 40px;
+    font-size:18px;
+    font-weight: 600;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    background: white;
+    color: #1e3c72;
+    margin-top: 20px;
+}
+
+.emoji {
+    position: fixed;
+    font-size: 40px;
+    user-select: none;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: top 8s linear, transform 8s linear;
+}
+
+.emoji.enlarged {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(2.5) !important;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 120px;
+    height: 120px;
+    border-radius: 25%;
+    z-index: 200;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.emoji-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 16px;
+    font-weight: bold;
+    background: white;
+    color: #1e3c72;
+    padding: 10px 20px;
+    border-radius: 15px;
+    z-index: 300;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 80vw;
+    text-align: center;
+    pointer-events: none;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.emoji-message.active {
+    top: calc(50% + 100px);
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.particle {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    pointer-events: none;
+    font-size: 45px;
+    z-index: 500;
+    transition: transform 1s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 1s ease-out;
+    opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<audio id="music" loop>
+    <source src="audio/yung-kai-blue.mp3" type="audio/mpeg">
+</audio>
+
+<div class="card" id="intro">
+    <h1>Hey 😊</h1>
+    <p>I've always wanted to show you something… hope you like it!</p>
+    <button id="start">Let's see</button>
+</div>
+
+<script>
+const music = document.getElementById("music");
+const intro = document.getElementById("intro");
+const startBtn = document.getElementById("start");
+
+const emojis = ["❤️","😍","💕","🥰","🎉","🎈","🍃","🍂","🌹","💐","🌸","🌷","🌼","🌻","🌺","🏵️","☘️","🍀"];
+const messages = [
+    "I keep thinking about the little things you used to do 😌",
+    "I bet you’re up to something mischievous right now… 😏",
+    "You have a way of popping into my thoughts at the weirdest times 🤭",
+    "There’s something about you I still can’t forget 😎",
+    "Stop being so unforgettable 😏",
+    "I wish you could see yourself right now… amazing as always 😌",
+    "You’re basically a legend… don’t let it go to your head 😏",
+    "I still remember the vibe you bring… it’s magnetic 😌",
+    "You have this way of making ordinary days… less ordinary 😄",
+    "If I start smiling randomly today… you know why 😉",
+    "I think I owe you for making everything feel special 😎",
+    "You’re trouble… but the fun kind 😏",
+    "Why do I keep thinking about you at random times? 😅",
+    "You should get a warning label… dangerously charming 😌",
+    "I don’t say this often… but you have a way of standing out 😄",
+    "Stop being so memorable… it’s unfair 😏",
+    "There’s something about you I just can’t shake 😌",
+    "You’re like a little mystery I don’t want to solve 🤭",
+    "I’d like to see your reaction if you saw this emoji pop up 😎",
+    "Somehow… you always sneak into my thoughts 😌",
+    "You’ve got that effect on people… I hope you know 😏",
+    "I wonder if you know how unforgettable you are 😄",
+    "You’re basically a highlight in my memory 😎",
+    "Careful… I might start sending emojis just to annoy you 😉",
+    "I’m not saying anything… just letting you know you pop into my mind sometimes 😌"
+];
+
+let currentEnlarged = null;
+let currentMessage = null;
+
+startBtn.addEventListener("click", () => {
+    intro.style.display = "none";
+    music.volume = 0.35;
+    music.play().catch(() => {});
+    setInterval(spawnEmoji, 800);
+});
+
+function spawnEmoji() {
+    const e = document.createElement("div");
+    e.className = "emoji";
+    const char = emojis[Math.floor(Math.random() * emojis.length)];
+    e.textContent = char;
+    e.style.left = Math.random() * 90 + "vw";
+    e.style.top = "110vh"; 
+
+    e.onclick = (event) => {
+        event.stopPropagation();
+        if (e.classList.contains("enlarged")) return;
+        enlargeToCenter(e);
+    };
+
+    document.body.appendChild(e);
+
+    setTimeout(() => {
+        if (!e.classList.contains("enlarged")) {
+            e.style.top = "-20vh";
+            e.style.transform = `rotate(${Math.random() * 360}deg)`;
+        }
+    }, 50);
+}
+
+function enlargeToCenter(emoji) {
+    if (currentEnlarged) {
+        triggerBurst(currentEnlarged, currentMessage);
+    }
+
+    currentEnlarged = emoji;
+    emoji.classList.add("enlarged");
+
+    const msg = document.createElement("div");
+    msg.className = "emoji-message";
+    msg.textContent = messages[Math.floor(Math.random() * messages.length)];
+    document.body.appendChild(msg);
+    currentMessage = msg;
+
+    setTimeout(() => msg.classList.add("active"), 50);
+
+    emoji.burstTimeout = setTimeout(() => {
+        if (currentEnlarged === emoji) {
+            triggerBurst(emoji, msg);
+        }
+    }, 4000);
+}
+
+function triggerBurst(em, msgEl) {
+    clearTimeout(em.burstTimeout);
+    
+    if (msgEl) {
+        msgEl.classList.remove("active");
+    }
+
+    setTimeout(() => {
+        const char = em.textContent;
+        em.style.opacity = "0";
+        em.style.transform = "translate(-50%, -50%) scale(0)";
+        
+        if (msgEl) msgEl.style.opacity = "0";
+
+        createBurst(char);
+
+        setTimeout(() => {
+            em.remove();
+            if (msgEl) msgEl.remove();
+            if (currentEnlarged === em) {
+                currentEnlarged = null;
+                currentMessage = null;
+            }
+        }, 700);
+    }, 30);
+}
+
+function createBurst(char) {
+    const particleCount = 30;
+    for (let i = 0; i < particleCount; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.textContent = char;
+        p.style.transform = "translate(-50%, -50%) scale(0.5)";
+        document.body.appendChild(p);
+
+        setTimeout(() => {
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 300 + Math.random() * 400;
+            const x = Math.cos(angle) * dist;
+            const y = Math.sin(angle) * dist;
+
+            p.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1.2) rotate(${Math.random() * 720}deg)`;
+            p.style.opacity = "0";
+        }, 25);
+
+        setTimeout(() => p.remove(), 1200);
+    }
+}
+</script>
+</body>
+</html>
+
